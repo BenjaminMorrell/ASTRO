@@ -29,47 +29,40 @@ end
 switch constraint.fcnId
     case 1
         %% Ellipsoid Constraint
-        [maxCost,grad,maxIdx] = ellipsoidConstraintCost(states,constraint,in_out_scale,doGrad);
+        [c_cost,grad] = ellipsoidConstraintCostInt(states,constraint,in_out_scale,doGrad);
 
     case 2
         %% Cylinder Constraint
-        [maxCost,grad,maxIdx] = cylinderConstraintCost(states,constraint,in_out_scale,doGrad);
+        [c_cost,grad,maxIdx] = cylinderConstraintCost(states,constraint,in_out_scale,doGrad);
 
     case 3
         %% Cube Constraint
-        [maxCost,grad,maxIdx] = cubeConstraintCost(states,constraint,in_out_scale,doGrad);
+        [c_cost,grad,maxIdx] = cubeConstraintCost(states,constraint,in_out_scale,doGrad);
                 
 end
-
-% Cost zero if not violated
-if all(maxCost<=0)
-    % Constraint not violated
-    maxIdx = 0;
-    c_cost = 0;
-else
-    % Otherwise take one of the maximum costs (if multiple)
-    c_cost = maxCost(1);
-end
-
+maxIdx = 1;
 %% Compute gradient
 % initialise with zero gradient
 c_costGrad = zeros(OPT.cfg.Nx*OPT.cfg.N,1);
 
 % If option selected and contraint violated, compute the gradient
-if doGrad && maxIdx ~=0
+if doGrad
     
     gradIdx = 1;
     
-    % Run for each dimensions
+    % Run for each dimension
     for i = 1:OPT.cfg.Nx
-        %Form the sum of unscaled coefficients weighted by the gradient.  This
-        %is equivalent to (df/dx)*(dX/dC) for the range of coefficients
-        %corresponding to the current state variable
-        base = grad(i)*OPT.cfg.P.posUnscaled(maxIdx,:)+....
-            grad(i+OPT.cfg.Nx)*OPT.cfg.P.velUnscaled(maxIdx,:)+...
-            grad(i+OPT.cfg.Nx*2)*OPT.cfg.P.accUnscaled(maxIdx,:);
-        c_costGrad(gradIdx:gradIdx+OPT.cfg.N-1,1)= base(1,1:OPT.cfg.N)';
-        gradIdx = gradIdx + OPT.cfg.N;
+        base = zeros(1,OPT.cfg.N);
+        for j = 1:OPT.cfg.nSamp % For each point
+            %Form the sum of unscaled coefficients weighted by the gradient.  This
+            %is equivalent to (df/dx)*(dX/dC) for the range of coefficients
+            %corresponding to the current state variable
+            base = base + grad(i,j)*OPT.cfg.P.posScaled(j,:)+....
+                grad(i+OPT.cfg.Nx,j)*OPT.cfg.P.velScaled(j,:)+...
+                grad(i+OPT.cfg.Nx*2,j)*OPT.cfg.P.accScaled(j,:);
+        end
+            c_costGrad(gradIdx:gradIdx+OPT.cfg.N-1,1)= base(1,1:OPT.cfg.N)';
+            gradIdx = gradIdx + OPT.cfg.N;
     end
     
     %Perform the final calculation 2*f*(df/Dx)' * dX/dC

@@ -31,7 +31,8 @@ maxUnsat = 0; % start with no constraint violation
 %% Loop for each constraint and augment the cost and gradient
 for i = 1:length(constraints)
     % Compute the cost, cost gradient and max violation ID
-    [c_cost,c_costGrad,maxIdx] = constraintCostGrad(states,constraints(i),doGrad);
+%     [c_cost,c_costGrad,maxIdx] = constraintCostGrad(states,constraints(i),doGrad);
+    [c_cost,c_costGrad,maxIdx] = constraintCostGradInt(states,constraints(i),doGrad);
     
     %Check for an active constraint
     if all(maxIdx>0)

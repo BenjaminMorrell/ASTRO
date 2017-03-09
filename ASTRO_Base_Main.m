@@ -16,14 +16,14 @@ OPT.trial         = 1;    % Trials for different test cases 1-7 now active
 %% Load Settings
 % Loads the default settings for the planner - look in this function for more details
 LoadPlannerSettings();    % Loads into the OPT Structure
-OPT.CONSTR.fcnType          = 1;        % Obstacle type to use
+OPT.CONSTR.fcnType          = 3;        % Obstacle type to use
 
 %% Load Boundary Conditions
 % Setup new test cases and boundary conditions in this function
 [BCs,NSPHEREs] = LoadBCs();
 
 %% Basic Settings to modify
-OPT.CONSTR.Weight_Ellipsoid = 1e3;      % Weighting for ellipsoid constraints
+OPT.CONSTR.Weight_Ellipsoid = 1e0;      % Weighting for ellipsoid constraints
 OPT.CONSTR.Weight_Cylinder  = 1e3;      % Weighting for Cylinder Constraints
 OPT.CONSTR.Weight_Cube      = 1e3;      % Weighting for Cube Constraints
 

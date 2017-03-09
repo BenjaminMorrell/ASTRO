@@ -1,4 +1,4 @@
-function [maxCost,grad,maxIdx] = ellipsoidConstraintCostInt(states,constraint,in_out_scale,doGrad)
+function [totalCost,grad] = ellipsoidConstraintCostInt(states,constraint,in_out_scale,doGrad)
 % ellipsoidConstraintCost
 % Computes cost and cost gradient for an ellipsoid constraint.
 %
@@ -10,8 +10,7 @@ function [maxCost,grad,maxIdx] = ellipsoidConstraintCostInt(states,constraint,in
 %
 % Output
 %       totalCost       The total cost
-%       costGrad        The total cost gradient
-%       maxUnsat        The cost of the maximum violation
+%       grad            The total cost gradient
 %
 % See documentation for details on the cost function equations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,18 +40,14 @@ switch OPT.CONSTR.fcnType
         costtmp = in_out_scale*(d_squared_mat-ones(size(d_squared_mat))); % cost function (subtract 1)
         costtmp=diag(costtmp); % Take only the diagonal terms
         
-        % Take the maximum violation
-        maxCost = max(costtmp);
-        % Id of maximum violation
-        maxIdx = find(costtmp==maxCost);
-        
-        if numel(maxIdx)>1
-            maxIdx = maxIdx(1);
-        end
+        % total cost is the sum of costs
+        totalCost = sum(costtmp);
         
         % Compute gradient if option selected (only for the maximum violation)
-        if doGrad && maxCost>0
-            grad(constraint.rng) = in_out_scale*2*constraint.A*x(:,maxIdx);
+        if doGrad
+            for i = 1:size(costtmp,1)
+                grad(constraint.rng,i) = in_out_scale*2*constraint.A*x(:,i);
+            end
         end
     case 2
         % Gaussian Cost function
@@ -60,18 +55,15 @@ switch OPT.CONSTR.fcnType
         d_squared_mat = diag(x'*constraint.A*x); % normalised "Distance squared" measure
         costtmp=exp((-9/2).*d_squared_mat); % Take only the diagonal terms
         
-        % Take the maximum violation
-        maxCost = max(costtmp);
-        % Id of maximum violation
-        maxIdx = find(costtmp==maxCost);
-        
-        if numel(maxIdx)>1
-            maxIdx = maxIdx(1);
-        end
+        % total cost is the sum of costs
+        totalCost = sum(costtmp);
+
         
         % Compute gradient if option selected (only for the maximum violation)
-        if doGrad && maxCost>0
-            grad(constraint.rng) = -9*constraint.A*x(:,maxIdx).*costtmp(maxIdx);
+        if doGrad
+            for i = 1:size(costtmp,1)
+                grad(constraint.rng,i) = -9*constraint.A*x(:,i).*costtmp(i);
+            end
         end
         
     case 3
@@ -81,18 +73,14 @@ switch OPT.CONSTR.fcnType
 
         costtmp = 1./dsq_scaled - 1;
         
-        % Take the maximum violation
-        maxCost = max(costtmp);
-        % Id of maximum violation
-        maxIdx = find(costtmp==maxCost);
-        
-        if numel(maxIdx)>1
-            maxIdx = maxIdx(1);
-        end
-        
+        % total cost is the sum of costs
+        totalCost = sum(costtmp);
+                
         % Compute gradient if option selected (only for the maximum violation)
-        if doGrad && maxCost>0
-            grad(constraint.rng) = -2*constraint.A*x(:,maxIdx).*(costtmp(maxIdx)+1)^2;
+        if doGrad && totalCost>0
+            for i = 1:length(costtmp)
+                grad(constraint.rng,i) = -2*constraint.A*x(:,i).*(costtmp(i)+1)^2;
+            end
         end
     case 4
         % Inverse distance r/d - 1
@@ -101,18 +89,14 @@ switch OPT.CONSTR.fcnType
 
         costtmp = 1./d_scaled - 1;
         
-        % Take the maximum violation
-        maxCost = max(costtmp);
-        % Id of maximum violation
-        maxIdx = find(costtmp==maxCost);
-        
-        if numel(maxIdx)>1
-            maxIdx = maxIdx(1);
-        end
-        
-        % Compute gradient if option selected (only for the maximum violation)
-        if doGrad && maxCost>0
-            grad(constraint.rng) = -constraint.A*x(:,maxIdx).*(costtmp(maxIdx)+1)^3;
+        % total cost is the sum of costs
+        totalCost = sum(costtmp);
+                
+        % Compute gradient if option selected
+        if doGrad && totalCost>0
+            for i = 1:size(costtmp,1)
+                grad(constraint.rng,i) = -constraint.A*x(:,i).*(costtmp(i)+1)^3;
+            end
         end
         
     case 5
@@ -122,18 +106,14 @@ switch OPT.CONSTR.fcnType
 
         costtmp = 1 - d_scaled;
         
-        % Take the maximum violation
-        maxCost = max(costtmp);
-        % Id of maximum violation
-        maxIdx = find(costtmp==maxCost);
-        
-        if numel(maxIdx)>1
-            maxIdx = maxIdx(1);
-        end
-        
-        % Compute gradient if option selected (only for the maximum violation)
-        if doGrad && maxCost>0
-            grad(constraint.rng) = -constraint.A*x(:,maxIdx)./(costtmp(maxIdx)+1);
+                % total cost is the sum of costs
+        totalCost = sum(costtmp);
+                
+        % Compute gradient if option selected
+        if doGrad && totalCost>0
+            for i = 1:size(costtmp,1)
+                grad(constraint.rng,i) = -constraint.A*x(:,i)./(costtmp(i)+1);
+            end
         end
         
 end
