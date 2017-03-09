@@ -28,6 +28,7 @@ switch DefaultSet
         OPT.CONSTR.Weight_accel     = 0.001;    %0.001        
         
         % Constraint Settings
+        OPT.CONSTR.fcnType          = 1;        % Obstacle type to use
         OPT.CONSTR.Weight_Ellipsoid = 1e3;      % Weighting for ellipsoid constraints
         OPT.CONSTR.Weight_Cylinder  = 1e3;      % Weighting for Cylinder Constraints
         OPT.CONSTR.Weight_Cube      = 100;      % Weighting for Cube Constraints

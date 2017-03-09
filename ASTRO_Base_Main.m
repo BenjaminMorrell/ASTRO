@@ -1,5 +1,5 @@
 % ASTRO - Admissible Subspace TRajectory Optimizer
-% Clean, Basic, bare bones, User Friendly Version
+%
 clear all;close all
 %% Initialise global variables
 global OPT
@@ -11,11 +11,12 @@ constraints = initConstraint;
 %% Select test case to run 
 % See README for explanation of different standard test cases
 OPT.testcase      = 1;    % Test case general setup. Default: 1
-OPT.trial         = 3;    % Trials for different test cases 1-7 now active
-        
+OPT.trial         = 1;    % Trials for different test cases 1-7 now active
+
 %% Load Settings
 % Loads the default settings for the planner - look in this function for more details
 LoadPlannerSettings();    % Loads into the OPT Structure
+OPT.CONSTR.fcnType          = 1;        % Obstacle type to use
 
 %% Load Boundary Conditions
 % Setup new test cases and boundary conditions in this function
