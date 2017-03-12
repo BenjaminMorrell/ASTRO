@@ -64,6 +64,8 @@ switch OPT.testcase
                 OPT.dynamic         = 3; % Dynamic cylinder testing
                 OPT.PLOT.manual     = 0; % to manual progress plotting
                 OPT.PLOT.Animate    = 1; % to plot an animation
+            case 10
+                OPT.static          = 10; % Multiple SPHERES
         end
         
         % Plot options

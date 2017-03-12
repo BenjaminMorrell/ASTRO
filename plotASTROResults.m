@@ -20,7 +20,7 @@ global OPT
 axis_limit = OPT.PLOT.axis_limit;
 
 %% Load Figure
-figure(21);
+figure(21+OPT.PLOT.j*100);
 hold on
 
 %% Plot Path
@@ -45,7 +45,7 @@ view(3)
 %% Plot Graphs tracking optimisation performance
 if OPT.PLOT.Graphs
     % Plot solver tracking graphs
-    figure(22)
+    figure(22+OPT.PLOT.j*100)
     subplot(2,2,1)
     plot(DataTrack.totalCost)
     xlabel('iteration');ylabel('cost')
@@ -71,7 +71,7 @@ end
 %% plot evolution of path 
 if OPT.PLOT.PathProgression
     % Create figure
-    figure(23)
+    figure(23+OPT.PLOT.j*100)
     hold on
     
     % define the colormap

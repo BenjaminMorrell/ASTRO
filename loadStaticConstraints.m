@@ -13,8 +13,8 @@ switch OPT.testcase
             %% Spherical ellipsoid constraint only
             % Define Properties
             x0 = [0;0;0];                               % Centroid
-            r_sphere = 0.2;                             % Radius of sphere
-            axes_sizes = [r_sphere;r_sphere;r_sphere];  % Axes vector
+            r_sphere_mean = 0.2;                             % Radius of sphere
+            axes_sizes = [r_sphere_mean;r_sphere_mean;r_sphere_mean];  % Axes vector
             Rot_Mat = eye(3);                           % Rotation matrix (identity for sphere)
   
             % Create Constraint (input into constraints global variable)
@@ -77,7 +77,27 @@ switch OPT.testcase
             
         case 6
             
-                       
+                  
+        case 10
+            %% Many SPHERES
+            nSpheres = 40;          % number of spheres
+            x0_mean = [0;0;0];      % Mean of centroids
+            sdX0 = [0.65;0.3;0.65]; % Standard deviation for centroids
+            r_sphere_mean = 0.24;    % Radius of sphere
+            sd_r = 0.07;            % Standard deviation for the radii
+            Rot_Mat = eye(3);       % Rotation matrix (identity for sphere)
+            % Seed random number generator to have consistent set.
+            rng(1);
+            
+            % Loop to create each sphere, with normal distribution of centre and radius
+            for i = 1:nSpheres
+                x0 = x0_mean + sdX0.*randn(3,1);
+                r = r_sphere_mean + sd_r.*randn;
+                axes_sizes = [r;r;r];  % Axes vector
+                
+                % Create Constraint (input into constraints global variable)
+                [constr_count] = initEllipsoidConstraint(x0,axes_sizes,Rot_Mat,constr_count);
+            end
     end
     
 end

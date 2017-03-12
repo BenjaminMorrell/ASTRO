@@ -19,6 +19,8 @@ function [totalCost,costGrad,maxUnsat] = totalCostGrad(states,CLegPoly,doGrad)
 % Created 20160429 - BMorrell - for ASTRO_base
 
 global constraints
+global OPT
+global TIMER
 
 %% Path cost and gradient - optimisation cost function
 [path_cost, path_costGrad] = pathCostGrad(CLegPoly, doGrad);
@@ -28,12 +30,19 @@ totalCost = path_cost; % start with just the path cost
 costGrad = path_costGrad;
 maxUnsat = 0; % start with no constraint violation 
 
+% Time
+t1 = tic;
+
 %% Loop for each constraint and augment the cost and gradient
 for i = 1:length(constraints)
-    % Compute the cost, cost gradient and max violation ID
-%     [c_cost,c_costGrad,maxIdx] = constraintCostGrad(states,constraints(i),doGrad);
-    [c_cost,c_costGrad,maxIdx] = constraintCostGradInt(states,constraints(i),doGrad);
     
+    % Compute the cost, cost gradient and max violation ID
+    if OPT.CONSTR.fcnInt
+        [c_cost,c_costGrad,maxIdx] = constraintCostGradInt(states,constraints(i),doGrad);
+    else
+        [c_cost,c_costGrad,maxIdx] = constraintCostGrad(states,constraints(i),doGrad);
+    end  
+ 
     % Test numerical gradient
 %     fun = @(X) constraintCostRaw(X,constraints(i));
 %     J = JacobGen(fun,CLegPoly,[])';
@@ -53,3 +62,5 @@ for i = 1:length(constraints)
         maxUnsat = max(maxUnsat,constraints(i).weight*c_cost^2);
     end
 end
+
+TIMER.constrCalc = TIMER.constrCalc + toc(t1);

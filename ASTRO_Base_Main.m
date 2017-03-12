@@ -11,7 +11,7 @@ constraints = initConstraint;
 %% Select test case to run 
 % See README for explanation of different standard test cases
 OPT.testcase      = 1;    % Test case general setup. Default: 1
-OPT.trial         = 1;    % Trials for different test cases 1-7 now active
+OPT.trial         = 2;    % Trials for different test cases 1-7 now active
 
 %% Load Settings
 % Loads the default settings for the planner - look in this function for more details
@@ -23,7 +23,7 @@ OPT.CONSTR.fcnType          = 2;        % Obstacle type to use
 [BCs,NSPHEREs] = LoadBCs();
 
 %% Basic Settings to modify
-OPT.CONSTR.Weight_Ellipsoid = 1e-3;      % Weighting for ellipsoid constraints
+OPT.CONSTR.Weight_Ellipsoid = 1e-2;      % Weighting for ellipsoid constraints
 OPT.CONSTR.Weight_Cylinder  = 1e3;      % Weighting for Cylinder Constraints
 OPT.CONSTR.Weight_Cube      = 1e3;      % Weighting for Cube Constraints
 

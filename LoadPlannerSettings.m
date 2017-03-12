@@ -29,6 +29,7 @@ switch DefaultSet
         
         % Constraint Settings
         OPT.CONSTR.fcnType          = 1;        % Obstacle type to use
+        OPT.CONSTR.fcnInt           = 0;        % 0 - max point constrat, 1 - integral type constraint
         OPT.CONSTR.Weight_Ellipsoid = 1e3;      % Weighting for ellipsoid constraints
         OPT.CONSTR.Weight_Cylinder  = 1e3;      % Weighting for Cylinder Constraints
         OPT.CONSTR.Weight_Cube      = 100;      % Weighting for Cube Constraints
@@ -42,6 +43,7 @@ switch DefaultSet
         OPT.PLOT.axis_limit      = 1; % limits for axis on plotting (as a cube)
         OPT.PLOT.manual          = 0; % Whether or not to have manual plotting
         OPT.PLOT.Animate         = 0; % Whether or not to animate
+        OPT.PLOT.j               = 0; % For multiple plot cases
         
         %% Defaults for test cases
         OPT.static      = 1; % flag for using Static Obstacles
