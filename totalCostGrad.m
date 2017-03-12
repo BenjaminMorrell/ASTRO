@@ -34,6 +34,10 @@ for i = 1:length(constraints)
 %     [c_cost,c_costGrad,maxIdx] = constraintCostGrad(states,constraints(i),doGrad);
     [c_cost,c_costGrad,maxIdx] = constraintCostGradInt(states,constraints(i),doGrad);
     
+    % Test numerical gradient
+%     fun = @(X) constraintCostRaw(X,constraints(i));
+%     J = JacobGen(fun,CLegPoly,[])';
+    
     %Check for an active constraint
     if all(maxIdx>0)
         % Add cost of constraint to total cost, weighted (note that the cost function is c_cost^2)

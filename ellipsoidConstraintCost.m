@@ -58,7 +58,9 @@ switch OPT.CONSTR.fcnType
         % Gaussian Cost function
         % Calculate cost
         d_squared_mat = diag(x'*constraint.A*x); % normalised "Distance squared" measure
-        costtmp=exp((-9/2).*d_squared_mat); % Take only the diagonal terms
+        nSig = 2;
+        coeff = 1/(sqrt(norm(constraint.A./nSig^2))*sqrt(2*pi));
+        costtmp=coeff.*exp((-nSig^2/2).*d_squared_mat); % Take only the diagonal terms
         
         % Take the maximum violation
         maxCost = max(costtmp);
@@ -71,7 +73,7 @@ switch OPT.CONSTR.fcnType
         
         % Compute gradient if option selected (only for the maximum violation)
         if doGrad && maxCost>0
-            grad(constraint.rng) = -9*constraint.A*x(:,maxIdx).*costtmp(maxIdx);
+            grad(constraint.rng) = -coeff.*nSig^2*constraint.A*x(:,maxIdx).*costtmp(maxIdx);
         end
         
     case 3
@@ -133,7 +135,7 @@ switch OPT.CONSTR.fcnType
         
         % Compute gradient if option selected (only for the maximum violation)
         if doGrad && maxCost>0
-            grad(constraint.rng) = -constraint.A*x(:,maxIdx)./(costtmp(maxIdx)+1);
+            grad(constraint.rng) = -constraint.A*x(:,maxIdx)./d_scaled(maxIdx);
         end
         
 end

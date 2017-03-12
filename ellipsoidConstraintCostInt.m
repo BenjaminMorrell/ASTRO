@@ -53,7 +53,9 @@ switch OPT.CONSTR.fcnType
         % Gaussian Cost function
         % Calculate cost
         d_squared_mat = diag(x'*constraint.A*x); % normalised "Distance squared" measure
-        costtmp=exp((-9/2).*d_squared_mat); % Take only the diagonal terms
+        nSig = 3;
+        coeff = 1/(sqrt(norm(constraint.A./nSig^2))*sqrt(2*pi));
+        costtmp=coeff*exp((-nSig^2/2).*d_squared_mat); % Take only the diagonal terms
         
         % total cost is the sum of costs
         totalCost = sum(costtmp);
@@ -62,7 +64,7 @@ switch OPT.CONSTR.fcnType
         % Compute gradient if option selected (only for the maximum violation)
         if doGrad
             for i = 1:size(costtmp,1)
-                grad(constraint.rng,i) = -9*constraint.A*x(:,i).*costtmp(i);
+                grad(constraint.rng,i) = -coeff*nSig^2*constraint.A*x(:,i).*costtmp(i);
             end
         end
         
@@ -77,7 +79,7 @@ switch OPT.CONSTR.fcnType
         totalCost = sum(costtmp);
                 
         % Compute gradient if option selected (only for the maximum violation)
-        if doGrad && totalCost>0
+        if doGrad
             for i = 1:length(costtmp)
                 grad(constraint.rng,i) = -2*constraint.A*x(:,i).*(costtmp(i)+1)^2;
             end
@@ -93,7 +95,7 @@ switch OPT.CONSTR.fcnType
         totalCost = sum(costtmp);
                 
         % Compute gradient if option selected
-        if doGrad && totalCost>0
+        if doGrad
             for i = 1:size(costtmp,1)
                 grad(constraint.rng,i) = -constraint.A*x(:,i).*(costtmp(i)+1)^3;
             end
@@ -110,9 +112,9 @@ switch OPT.CONSTR.fcnType
         totalCost = sum(costtmp);
                 
         % Compute gradient if option selected
-        if doGrad && totalCost>0
+        if doGrad
             for i = 1:size(costtmp,1)
-                grad(constraint.rng,i) = -constraint.A*x(:,i)./(costtmp(i)+1);
+                grad(constraint.rng,i) = -constraint.A*x(:,i)./d_scaled(i);
             end
         end
         

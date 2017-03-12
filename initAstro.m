@@ -3,8 +3,8 @@ function cfg = initAstro()
 
 cfg.N             = 12;             %Legendre Polynomial Order
 cfg.Nx            = 3;              %Number of states
-cfg.exitTol       = 1e-8;           %Exit if relative difference in cost between steps is less than this value
-cfg.firstOrderTol = 1e-6;           %Exit if cost decrease in feasible direction is less than this
+cfg.exitTol       = 1e-12;%8;           %Exit if relative difference in cost between steps is less than this value
+cfg.firstOrderTol = 1e-10;%6;           %Exit if cost decrease in feasible direction is less than this
 cfg.projGrad      = 1;              %Set to 1 to use projected gradient
 cfg.stepSize      = 1;              %Initial size of step taken in descent
 cfg.maxIter       = 200;            %Maximum number of iterations before exiting

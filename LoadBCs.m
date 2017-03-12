@@ -18,7 +18,7 @@ switch OPT.testcase
     case 1
         % Simple Initial Static Test Case
         % initial Position
-        X0 = [0.1,-0.5,0,0,0,0]-initial_offset*[1,0,0, zeros(1,3)];
+        X0 = [0.01,-0.5,0,-0.0,0,0]-initial_offset*[1,0,0, zeros(1,3)];
         % Final Position
         Xf = [0,0.5,0,0,0,0];
         % Store BCs
